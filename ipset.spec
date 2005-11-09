@@ -13,6 +13,7 @@ License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{name}-%{version_base}-%{version_tstamp}.tar.bz2
 # Source0-md5:	f44ed0ddb714060716677838cd19045c
+Patch0:		%{name}-no_kernel_headers.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	linux-libc-headers >= 2.6.11.1
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -29,6 +30,7 @@ speed when matching an entry against a set.
 
 %prep
 %setup -qn %{name}-%{version_base}
+%patch0 -p1
 
 %build
 %{__make} \
