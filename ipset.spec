@@ -4,6 +4,7 @@
 #	- Requires and BuildRequires with proper versions
 #
 Summary:	IP sets utility
+Summary(pl):	Narzêdzie do zarz±dzania zbiorami IP
 Name:		ipset
 %define version_base 2.2.6
 %define version_tstamp 20051028
@@ -27,6 +28,13 @@ can be administered by the ipset utility. Depending on the type,
 currently an IP set may store IP addresses, (TCP/UDP) port numbers or
 IP addresses with MAC addresses in a way, which ensures lightning
 speed when matching an entry against a set.
+
+%description -l pl
+Zbiory IP to szkielet w j±drze Linuksa 2.4.x i 2.6.x, którym mo¿na
+administrowaæ przy u¿yciu narzêdzia ipset. W zale¿no¶ci od rodzaju
+aktualnie zbiór IP mo¿e przechowywaæ adresy IP, numery portów
+(TCP/UDP) lub adresy IP z adresami MAC - w sposób zapewniaj±cy
+maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 
 %prep
 %setup -qn %{name}-%{version_base}
