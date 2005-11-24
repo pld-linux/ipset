@@ -6,21 +6,18 @@
 Summary:	IP sets utility
 Summary(pl):	Narzêdzie do zarz±dzania zbiorami IP
 Name:		ipset
-%define version_base 2.2.6
-%define version_tstamp 20051028
+%define		version_base	2.2.7
+%define		version_tstamp	20051124
 Version:	%{version_base}_%{version_tstamp}
-Release:	0.1
+Release:	1
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{name}-%{version_base}-%{version_tstamp}.tar.bz2
-# Source0-md5:	f44ed0ddb714060716677838cd19045c
+# Source0-md5:	17ab7fab906409cab984e009a6b5032e
 Patch0:		%{name}-no_kernel_headers.patch
 URL:		http://ipset.netfilter.org/
-BuildRequires:	linux-libc-headers >= 2.6.11.1
+BuildRequires:	linux-libc-headers >= 7:2.6.12.0-10
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
-
-# not all set types are supported by our kernel and linux-libc-headers
-%define _settypes ipmap portmap macipmap iphash nethash iptree
 
 %description
 IP sets are a framework inside the Linux 2.4.x and 2.6.x kernel, which
@@ -46,7 +43,6 @@ maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 	LIBDIR="%{_libdir}" \
 	MANDIR="%{_mandir}" \
 	BINDIR="%{_sbindir}" \
-	SETTYPES:="%{_settypes}" \
 	COPT_FLAGS:="%{rpmcflags}"
 
 %install
@@ -57,8 +53,7 @@ rm -rf $RPM_BUILD_ROOT
 	PREFIX="%{_prefix}" \
 	LIBDIR="%{_libdir}" \
 	MANDIR="%{_mandir}" \
-	BINDIR="%{_sbindir}" \
-	SETTYPES:="%{_settypes}"
+	BINDIR="%{_sbindir}"
 
 %clean
 rm -rf $RPM_BUILD_ROOT
