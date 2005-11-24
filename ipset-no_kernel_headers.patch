@@ -1,6 +1,5 @@
-diff -dur -x '*~' ipset-2.2.6.orig/Makefile ipset-2.2.6/Makefile
---- ipset-2.2.6.orig/Makefile	2005-10-28 21:07:19.000000000 +0200
-+++ ipset-2.2.6/Makefile	2005-11-09 13:38:33.000000000 +0100
+--- ipset-2.2.7/Makefile.orig	2005-11-24 10:18:16.000000000 +0100
++++ ipset-2.2.7/Makefile	2005-11-24 11:24:27.619369250 +0100
 @@ -4,10 +4,6 @@
  # YOU SHOULD NOT NEED TO TOUCH ANYTHING BELOW THIS LINE
  ######################################################################
@@ -9,7 +8,7 @@ diff -dur -x '*~' ipset-2.2.6.orig/Makefile ipset-2.2.6/Makefile
 -KERNEL_DIR=/usr/src/linux
 -endif
 -
- IPSET_VERSION:=2.2.6
+ IPSET_VERSION:=2.2.7
  
  PREFIX:=/usr/local
 @@ -21,7 +17,7 @@
