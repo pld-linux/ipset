@@ -1,6 +1,5 @@
 #
 # TODO:
-#	- -devel subpackage
 #	- Requires and BuildRequires with proper versions
 #
 Summary:	IP sets utility
@@ -33,6 +32,15 @@ aktualnie zbiór IP mo¿e przechowywaæ adresy IP, numery portów
 (TCP/UDP) lub adresy IP z adresami MAC - w sposób zapewniaj±cy
 maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 
+%package devel
+Summary:        Library for the ipset interface
+Summary(pl):    Biblioteka do interfejsu ipset
+Group:          Development/Libraries
+
+%description devel
+
+%description devel -l pl
+
 %prep
 %setup -qn %{name}-%{version_base}
 %patch0 -p1
@@ -47,6 +55,7 @@ maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT/%{_includedir}
 
 %{__make} install \
 	DESTDIR="$RPM_BUILD_ROOT" \
@@ -54,6 +63,7 @@ rm -rf $RPM_BUILD_ROOT
 	LIBDIR="%{_libdir}" \
 	MANDIR="%{_mandir}" \
 	BINDIR="%{_sbindir}"
+install *.h $RPM_BUILD_ROOT/%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -65,3 +75,7 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_libdir}/ipset
 %attr(755,root,root) %{_libdir}/ipset/*.so
 %{_mandir}/man8/*
+
+%files devel
+%defattr(644,root,root,755)
+%{_includedir}/*.h
