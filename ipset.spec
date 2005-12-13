@@ -33,13 +33,15 @@ aktualnie zbiór IP mo¿e przechowywaæ adresy IP, numery portów
 maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 
 %package devel
-Summary:        Library for the ipset interface
-Summary(pl):    Biblioteka do interfejsu ipset
+Summary:	Header files for ipset interface
+Summary(pl):    Pliki nag³ówkowe do interfejsu ipset
 Group:          Development/Libraries
 
 %description devel
+Header files for ipset interface.
 
 %description devel -l pl
+Pliki nag³ówkowe do interfejsu ipset.
 
 %prep
 %setup -qn %{name}-%{version_base}
@@ -55,7 +57,7 @@ Group:          Development/Libraries
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/%{_includedir}
+install -d $RPM_BUILD_ROOT%{_includedir}
 
 %{__make} install \
 	DESTDIR="$RPM_BUILD_ROOT" \
@@ -63,7 +65,8 @@ install -d $RPM_BUILD_ROOT/%{_includedir}
 	LIBDIR="%{_libdir}" \
 	MANDIR="%{_mandir}" \
 	BINDIR="%{_sbindir}"
-install *.h $RPM_BUILD_ROOT/%{_includedir}
+
+install *.h $RPM_BUILD_ROOT%{_includedir}
 
 %clean
 rm -rf $RPM_BUILD_ROOT
