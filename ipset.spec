@@ -34,8 +34,8 @@ maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
 
 %package devel
 Summary:	Header files for ipset interface
-Summary(pl):    Pliki nag³ówkowe do interfejsu ipset
-Group:          Development/Libraries
+Summary(pl):	Pliki nag³ówkowe do interfejsu ipset
+Group:		Development/Libraries
 
 %description devel
 Header files for ipset interface.
