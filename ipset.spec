@@ -3,7 +3,7 @@
 #	- Requires and BuildRequires with proper versions
 #
 Summary:	IP sets utility
-Summary(pl):	Narzêdzie do zarz±dzania zbiorami IP
+Summary(pl.UTF-8):   NarzÄ™dzie do zarzÄ…dzania zbiorami IP
 Name:		ipset
 %define		version_base	2.2.8
 %define		version_tstamp	20051203
@@ -25,23 +25,23 @@ currently an IP set may store IP addresses, (TCP/UDP) port numbers or
 IP addresses with MAC addresses in a way, which ensures lightning
 speed when matching an entry against a set.
 
-%description -l pl
-Zbiory IP to szkielet w j±drze Linuksa 2.4.x i 2.6.x, którym mo¿na
-administrowaæ przy u¿yciu narzêdzia ipset. W zale¿no¶ci od rodzaju
-aktualnie zbiór IP mo¿e przechowywaæ adresy IP, numery portów
-(TCP/UDP) lub adresy IP z adresami MAC - w sposób zapewniaj±cy
-maksymaln± szybko¶æ przy dopasowywaniu elementu do zbioru.
+%description -l pl.UTF-8
+Zbiory IP to szkielet w jÄ…drze Linuksa 2.4.x i 2.6.x, ktÃ³rym moÅ¼na
+administrowaÄ‡ przy uÅ¼yciu narzÄ™dzia ipset. W zaleÅ¼noÅ›ci od rodzaju
+aktualnie zbiÃ³r IP moÅ¼e przechowywaÄ‡ adresy IP, numery portÃ³w
+(TCP/UDP) lub adresy IP z adresami MAC - w sposÃ³b zapewniajÄ…cy
+maksymalnÄ… szybkoÅ›Ä‡ przy dopasowywaniu elementu do zbioru.
 
 %package devel
 Summary:	Header files for ipset interface
-Summary(pl):	Pliki nag³ówkowe do interfejsu ipset
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe do interfejsu ipset
 Group:		Development/Libraries
 
 %description devel
 Header files for ipset interface.
 
-%description devel -l pl
-Pliki nag³ówkowe do interfejsu ipset.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe do interfejsu ipset.
 
 %prep
 %setup -qn %{name}-%{version_base}
