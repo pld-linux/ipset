@@ -3,7 +3,7 @@
 #	- Requires and BuildRequires with proper versions
 #
 Summary:	IP sets utility
-Summary(pl.UTF-8):   Narzędzie do zarządzania zbiorami IP
+Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
 %define		version_base	2.2.8
 %define		version_tstamp	20051203
@@ -34,7 +34,7 @@ maksymalną szybkość przy dopasowywaniu elementu do zbioru.
 
 %package devel
 Summary:	Header files for ipset interface
-Summary(pl.UTF-8):   Pliki nagłówkowe do interfejsu ipset
+Summary(pl.UTF-8):	Pliki nagłówkowe do interfejsu ipset
 Group:		Development/Libraries
 
 %description devel
