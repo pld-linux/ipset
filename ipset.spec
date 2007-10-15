@@ -5,17 +5,17 @@
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
-%define		version_base	2.2.9a
-%define		version_tstamp	20061009
+%define		version_base	2.3.0
+%define		version_tstamp	20070828
 Version:	%{version_base}_%{version_tstamp}
 Release:	1
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{name}-%{version_base}-%{version_tstamp}.tar.bz2
-# Source0-md5:	74ce3226b30cdd386630250bdc3488ef
+# Source0-md5:	9e17798dfd8ed87c63a1f3498f9fe64d
 Patch0:		%{name}-no_kernel_headers.patch
 URL:		http://ipset.netfilter.org/
-BuildRequires:	linux-libc-headers >= 7:2.6.12.0-10
+BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description

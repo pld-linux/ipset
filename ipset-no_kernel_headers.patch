@@ -8,15 +8,15 @@
 -KERNEL_DIR=/usr/src/linux
 -endif
 -
- IPSET_VERSION:=2.2.9a
+ IPSET_VERSION:=2.3.0
  
  PREFIX:=/usr/local
 @@ -21,7 +17,7 @@
  RELEASE_DIR:=/tmp
  
  COPT_FLAGS:=-O2
--CFLAGS:=$(COPT_FLAGS) -Wall -Wunused -I$(KERNEL_DIR)/include -I. # -g -DIPSET_DEBUG #-pg # -DIPTC_DEBUG
+-CFLAGS:=$(COPT_FLAGS) -Wall -Wunused -I$(KERNEL_DIR)/include -I. -g -DIPSET_DEBUG #-pg # -DIPTC_DEBUG
 +CFLAGS:=$(COPT_FLAGS) -Wall -Wunused -I. # -g -DIPSET_DEBUG #-pg # -DIPTC_DEBUG
  SH_CFLAGS:=$(CFLAGS) -fPIC
- SETTYPES:=ipmap portmap macipmap iphash nethash iptree ipporthash
+ SETTYPES:=ipmap portmap macipmap iphash nethash iptree iptreemap ipporthash
  
