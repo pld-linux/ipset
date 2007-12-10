@@ -13,6 +13,7 @@ License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{name}-%{version_base}-%{version_tstamp}.tar.bz2
 # Source0-md5:	9e17798dfd8ed87c63a1f3498f9fe64d
+Source1:	%{name}.init
 Patch0:		%{name}-no_kernel_headers.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2
@@ -43,6 +44,16 @@ Header files for ipset interface.
 %description devel -l pl.UTF-8
 Pliki nagłówkowe do interfejsu ipset.
 
+%package init
+Summary:	Ipset init (RedHat style)
+Group:		Networking/Admin
+PreReq:		rc-scripts
+Requires(post,preun):	/sbin/chkconfig
+Requires:	%{name}
+
+%description init
+Ipset initialization script.
+
 %prep
 %setup -qn %{name}-%{version_base}
 %patch0 -p1
@@ -57,7 +68,7 @@ Pliki nagłówkowe do interfejsu ipset.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_includedir}
+install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 
 %{__make} install \
 	DESTDIR="$RPM_BUILD_ROOT" \
@@ -68,8 +79,18 @@ install -d $RPM_BUILD_ROOT%{_includedir}
 
 install *.h $RPM_BUILD_ROOT%{_includedir}
 
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
+%post init
+/sbin/chkconfig --add %{name}
+
+%preun init
+if [ "$1" = "0" ]; then
+	/sbin/chkconfig --del %{name}
+fi
 
 %files
 %defattr(644,root,root,755)
@@ -82,3 +103,7 @@ rm -rf $RPM_BUILD_ROOT
 %files devel
 %defattr(644,root,root,755)
 %{_includedir}/*.h
+
+%files init
+%defattr(644,root,root,755)
+%attr(754,root,root) /etc/rc.d/init.d/*
