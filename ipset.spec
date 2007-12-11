@@ -2,11 +2,11 @@
 # TODO:
 #	- Requires and BuildRequires with proper versions
 #
+%define		version_base	2.3.0
+%define		version_tstamp	20070828
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
-%define		version_base	2.3.0
-%define		version_tstamp	20070828
 Version:	%{version_base}_%{version_tstamp}
 Release:	1
 License:	GPL
@@ -47,9 +47,9 @@ Pliki nagłówkowe do interfejsu ipset.
 %package init
 Summary:	Ipset init (RedHat style)
 Group:		Networking/Admin
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}
+Requires:	rc-scripts
 
 %description init
 Ipset initialization script.
