@@ -2,19 +2,16 @@
 # TODO:
 #	- Requires and BuildRequires with proper versions
 #
-%define		version_base	2.3.0
-%define		version_tstamp	20070828
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
-Version:	%{version_base}_%{version_tstamp}
+Version:	2.3.3a
 Release:	1
 License:	GPL
 Group:		Networking/Admin
-Source0:	http://ipset.netfilter.org/%{name}-%{version_base}-%{version_tstamp}.tar.bz2
-# Source0-md5:	9e17798dfd8ed87c63a1f3498f9fe64d
+Source0:	http://ipset.netfilter.org/%{name}-%{version}.tar.bz2
+# Source0-md5:	c7d2f165242edaef5581db0f7d5af520
 Source1:	%{name}.init
-Patch0:		%{name}-no_kernel_headers.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -55,11 +52,11 @@ Requires:	rc-scripts
 Ipset initialization script.
 
 %prep
-%setup -qn %{name}-%{version_base}
-%patch0 -p1
+%setup -q
 
 %build
-%{__make} \
+%{__make} binaries \
+	CC="%{__cc}" \
 	PREFIX="%{_prefix}" \
 	LIBDIR="%{_libdir}" \
 	MANDIR="%{_mandir}" \
@@ -70,7 +67,7 @@ Ipset initialization script.
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 
-%{__make} install \
+%{__make} binaries_install \
 	DESTDIR="$RPM_BUILD_ROOT" \
 	PREFIX="%{_prefix}" \
 	LIBDIR="%{_libdir}" \
