@@ -5,19 +5,22 @@
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
-%if !%{with kernel}
+%if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-
 %if "%{_alt_kernel}" != "%{nil}"
 %undefine	with_userspace
 %endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
 
+%define		rel	1
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
 Version:	2.4.3
-%define		rel	1
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
