@@ -1,19 +1,35 @@
 #
-# TODO:
-#	- Requires and BuildRequires with proper versions
-#
+# Conditional build:
+%bcond_without	dist_kernel	# allow non-distribution kernel
+%bcond_without	kernel		# don't build kernel modules
+%bcond_without	userspace	# don't build userspace tools
+%bcond_with	verbose		# verbose build (V=1)
+
+%if !%{with kernel}
+%undefine	with_dist_kernel
+%endif
+
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
-Version:	2.3.3a
-Release:	1
+Version:	2.4.3
+%define		rel	1
+Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{name}-%{version}.tar.bz2
-# Source0-md5:	c7d2f165242edaef5581db0f7d5af520
+# Source0-md5:	3c97324d04562a8bc25b0177100673ee
 Source1:	%{name}.init
 URL:		http://ipset.netfilter.org/
-BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
+%{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
+BuildRequires:	perl-base
+BuildRequires:	rpmbuild(macros) >= 1.379
+Requires(post,postun):	/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -36,25 +52,60 @@ Summary(pl.UTF-8):	Pliki nagłówkowe do interfejsu ipset
 Group:		Development/Libraries
 
 %description devel
-Header files for ipset interface.
+Header files for IPset interface.
 
 %description devel -l pl.UTF-8
-Pliki nagłówkowe do interfejsu ipset.
+Pliki nagłówkowe do interfejsu IPset.
 
 %package init
-Summary:	Ipset init (RedHat style)
+Summary:	IPset init (RedHat style)
 Group:		Networking/Admin
 Requires(post,preun):	/sbin/chkconfig
 Requires:	%{name}
 Requires:	rc-scripts
 
 %description init
-Ipset initialization script.
+IPset initialization script.
+
+%package -n kernel%{_alt_kernel}-net-ipset
+Summary:	IPset kernel modules
+Summary(pl.UTF-8):	Moduły jądra oferujące wsparcie dla zbiorów IP
+Release:	%{rel}@%{_kernel_ver_str}
+License:	GPL
+Group:		Base/Kernel
+%{?with_dist_kernel:%requires_releq_kernel}
+Requires(post,postun):	/sbin/depmod
+
+%description -n kernel%{_alt_kernel}-net-ipset
+IP sets are a framework inside the Linux 2.4.x and 2.6.x kernel, which
+can be administered by the ipset utility. Depending on the type,
+currently an IP set may store IP addresses, (TCP/UDP) port numbers or
+IP addresses with MAC addresses in a way, which ensures lightning
+speed when matching an entry against a set.
+
+This package contains kernel modules.
+
+%description -n kernel%{_alt_kernel}-net-ipset -l pl.UTF-8
+Zbiory IP to szkielet w jądrze Linuksa 2.4.x i 2.6.x, którym można
+administrować przy użyciu narzędzia ipset. W zależności od rodzaju
+aktualnie zbiór IP może przechowywać adresy IP, numery portów
+(TCP/UDP) lub adresy IP z adresami MAC - w sposób zapewniający
+maksymalną szybkość przy dopasowywaniu elementu do zbioru.
+
+Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 
 %prep
 %setup -q
+mv kernel/{Kbuild,Makefile}
+
+# maximum number of ipsets.
+%{__sed} -i 's:$(IP_NF_SET_MAX):256:' kernel/Makefile
+# hash size for bindings of IP sets.
+%{__sed} -i 's:$(IP_NF_SET_HASHSIZE):1024:' kernel/Makefile
+# these options can be overriden by module parameters.
 
 %build
+%if %{with userspace}
 %{__make} binaries \
 	CC="%{__cc}" \
 	PREFIX="%{_prefix}" \
@@ -62,9 +113,17 @@ Ipset initialization script.
 	MANDIR="%{_mandir}" \
 	BINDIR="%{_sbindir}" \
 	COPT_FLAGS:="%{rpmcflags}"
+%endif
+
+%if %{with kernel}
+# ugly hack for satisfy rpm build macro. in fact all modules will be build.
+%build_kernel_modules -C kernel -m ip_set
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
+
+%if %{with userspace}
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 
 %{__make} binaries_install \
@@ -75,8 +134,16 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 	BINDIR="%{_sbindir}"
 
 install *.h $RPM_BUILD_ROOT%{_includedir}
-
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+%endif
+
+%if %{with kernel}
+cd kernel
+%install_kernel_modules -m ip_set -d kernel/net/ipv4/netfilter
+install ip_set_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
+install ipt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
+cd -
+%endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -89,6 +156,13 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{name}
 fi
 
+%post	-n kernel%{_alt_kernel}-net-ipset
+%depmod %{_kernel_ver}
+
+%postun	-n kernel%{_alt_kernel}-net-ipset
+%depmod %{_kernel_ver}
+
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog ChangeLog.ippool TODO
@@ -104,3 +178,10 @@ fi
 %files init
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/*
+%endif
+
+%if %{with kernel}
+%files -n kernel%{_alt_kernel}-net-ipset
+%defattr(644,root,root,755)
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/*.ko*
+%endif
