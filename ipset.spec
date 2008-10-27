@@ -17,6 +17,7 @@
 %endif
 
 %define		rel	1
+%define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
@@ -24,9 +25,9 @@ Version:	2.4.3
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
-Source0:	http://ipset.netfilter.org/%{name}-%{version}.tar.bz2
+Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	3c97324d04562a8bc25b0177100673ee
-Source1:	%{name}.init
+Source1:	%{pname}.init
 URL:		http://ipset.netfilter.org/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
@@ -64,7 +65,7 @@ Pliki nagłówkowe do interfejsu IPset.
 Summary:	IPset init (RedHat style)
 Group:		Networking/Admin
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{name}
+Requires:	%{pname}
 Requires:	rc-scripts
 
 %description init
@@ -98,7 +99,7 @@ maksymalną szybkość przy dopasowywaniu elementu do zbioru.
 Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 
 %prep
-%setup -q
+%setup -q -n %{pname}-%{version}
 mv kernel/{Kbuild,Makefile}
 
 # maximum number of ipsets.
@@ -137,7 +138,7 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 	BINDIR="%{_sbindir}"
 
 install *.h $RPM_BUILD_ROOT%{_includedir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{name}
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
 
 %if %{with kernel}
@@ -152,11 +153,11 @@ cd -
 rm -rf $RPM_BUILD_ROOT
 
 %post init
-/sbin/chkconfig --add %{name}
+/sbin/chkconfig --add %{pname}
 
 %preun init
 if [ "$1" = "0" ]; then
-	/sbin/chkconfig --del %{name}
+	/sbin/chkconfig --del %{pname}
 fi
 
 %post	-n kernel%{_alt_kernel}-net-ipset
