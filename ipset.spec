@@ -62,14 +62,18 @@ Header files for IPset interface.
 Pliki nagłówkowe do interfejsu IPset.
 
 %package init
-Summary:	IPset init (RedHat style)
+Summary:	IPset init script
+Summary(pl.UTF-8):	Skrypt startowy IPset
 Group:		Networking/Admin
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{pname}
+Requires:	%{pname} = %{version}-%{release}
 Requires:	rc-scripts
 
 %description init
 IPset initialization script.
+
+%description init -l pl.UTF-8
+Skrypt startowy IPset.
 
 %package -n kernel%{_alt_kernel}-net-ipset
 Summary:	IPset kernel modules
@@ -181,7 +185,7 @@ fi
 
 %files init
 %defattr(644,root,root,755)
-%attr(754,root,root) /etc/rc.d/init.d/*
+%attr(754,root,root) /etc/rc.d/init.d/ipset
 %endif
 
 %if %{with kernel}
