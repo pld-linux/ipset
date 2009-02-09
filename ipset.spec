@@ -16,17 +16,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	6
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		ipset
-Version:	2.4.5
+Version:	2.4.7
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	9cd51ed1a901d8616bb0485b3f23fbe3
+# Source0-md5:	306bafcd143e74911cf4c45bfe05ba6e
 Source1:	%{pname}.init
 URL:		http://ipset.netfilter.org/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
