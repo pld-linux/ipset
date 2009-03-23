@@ -33,7 +33,6 @@ URL:		http://ipset.netfilter.org/
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.379
-Requires(post,postun):	/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -79,7 +78,6 @@ Skrypt startowy IPset.
 Summary:	IPset kernel modules
 Summary(pl.UTF-8):	Moduły jądra oferujące wsparcie dla zbiorów IP
 Release:	%{rel}@%{_kernel_ver_str}
-License:	GPL
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
