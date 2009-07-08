@@ -20,7 +20,7 @@
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
-Name:		ipset
+Name:		%{pname}%{_alt_kernel}
 Version:	3.0
 Release:	%{rel}
 License:	GPL
