@@ -33,6 +33,7 @@ URL:		http://ipset.netfilter.org/
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
 BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.379
+Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
