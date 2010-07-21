@@ -182,14 +182,15 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog ChangeLog.ippool TODO
-%attr(755,root,root) %{_sbindir}/*
+%attr(755,root,root) %{_sbindir}/ipset
 %dir %{_libdir}/ipset
-%attr(755,root,root) %{_libdir}/ipset/*.so
-%{_mandir}/man8/*
+%attr(755,root,root) %{_libdir}/ipset/libipset_*.so
+%{_mandir}/man8/ipset.8*
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/*.h
+%{_includedir}/ipset.h
+%{_includedir}/libipt_set.h
 
 %files init
 %defattr(644,root,root,755)
@@ -199,5 +200,7 @@ fi
 %if %{with kernel}
 %files -n kernel%{_alt_kernel}-net-ipset
 %defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/*.ko*
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ip_set*.ko*
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipt_set*.ko*
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipt_SET*.ko*
 %endif
