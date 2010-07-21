@@ -10,7 +10,7 @@
 IPSET_CONFIG=/etc/sysconfig/ipset
 if [ ! -f $IPSET_CONFIG ]; then
 	case "$1" in
-	start|restart|force-reload)
+	start|restart|try-restart|reload|force-reload)
 		exit 0
 	;;
 	esac
