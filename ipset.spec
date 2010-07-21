@@ -28,11 +28,10 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	9060d549a18c1c0794fa47a71343d627
 Source1:	%{pname}.init
-Patch0:	shadow-args.patch
+Patch0:		shadow-args.patch
 URL:		http://ipset.netfilter.org/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
-BuildRequires:	perl-base
 BuildRequires:	rpmbuild(macros) >= 1.379
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
