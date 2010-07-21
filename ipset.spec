@@ -107,11 +107,11 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %patch0 -p1
 mv kernel/{Kbuild,Makefile}
 
+# these options can be overriden by module parameters.
 # maximum number of ipsets.
 %{__sed} -i 's:$(IP_NF_SET_MAX):256:' kernel/Makefile
 # hash size for bindings of IP sets.
 %{__sed} -i 's:$(IP_NF_SET_HASHSIZE):1024:' kernel/Makefile
-# these options can be overriden by module parameters.
 
 %if "%{cc_version}" < "3.4"
 %{__sed} -i -e 's/-Wextra//' Makefile
@@ -132,7 +132,7 @@ mv kernel/{Kbuild,Makefile}
 %endif
 
 %if %{with kernel}
-# ugly hack for satisfy rpm build macro. in fact all modules will be build.
+# ugly hack for satisfy rpm build macro. in fact all modules will be built.
 %build_kernel_modules -C kernel -m ip_set
 %endif
 
