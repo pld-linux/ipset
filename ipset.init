@@ -45,16 +45,6 @@ stop() {
 	rm -f /var/lock/subsys/ipset
 }
 
-condrestart() {
-	if [ ! -f /var/lock/subsys/ipset ]; then
-		RETVAL=$1
-		return
-	fi
-
-	stop
-	start
-}
-
 save() {
 	show "Saving current rules to %s" $IPSET_CONFIG
 	/usr/sbin/ipset -S > $IPSET_CONFIG.tmp
@@ -82,11 +72,8 @@ case "$1" in
   stop)
 	stop
 	;;
-  restart|reload|force-reload)
+  restart|try-restart|reload|force-reload)
 	start
-	;;
-  try-restart)
-	condrestart 0
 	;;
   save)
 	save
