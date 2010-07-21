@@ -28,6 +28,7 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	9060d549a18c1c0794fa47a71343d627
 Source1:	%{pname}.init
+Patch0:	shadow-args.patch
 URL:		http://ipset.netfilter.org/
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
@@ -103,6 +104,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 mv kernel/{Kbuild,Makefile}
 
 # maximum number of ipsets.
@@ -110,6 +112,13 @@ mv kernel/{Kbuild,Makefile}
 # hash size for bindings of IP sets.
 %{__sed} -i 's:$(IP_NF_SET_HASHSIZE):1024:' kernel/Makefile
 # these options can be overriden by module parameters.
+
+%if "%{cc_version}" < "3.4"
+%{__sed} -i -e 's/-Wextra//' Makefile
+%{__sed} -i -e 's/-Winit-self//' Makefile
+%{__sed} -i -e 's/-Wold-style-definition//' Makefile
+%{__sed} -i -e 's/-Wno-missing-field-initializers//' Makefile
+%endif
 
 %build
 %if %{with userspace}
@@ -140,15 +149,15 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}}
 	MANDIR="%{_mandir}" \
 	BINDIR="%{_sbindir}"
 
-install *.h $RPM_BUILD_ROOT%{_includedir}
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
+cp -a *.h $RPM_BUILD_ROOT%{_includedir}
+install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
 
 %if %{with kernel}
 cd kernel
 %install_kernel_modules -m ip_set -d kernel/net/ipv4/netfilter
-install ip_set_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
-install ipt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
+install -p ip_set_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
+install -p ipt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
 cd -
 %endif
 
