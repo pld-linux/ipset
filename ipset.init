@@ -1,8 +1,11 @@
 #!/bin/sh
-
+#
 # chkconfig: 2345 07 93
 # description: Automates administration of IP sets.
+#
 # config: /etc/sysconfig/ipset
+#
+# $Id$
 
 IPSET_CONFIG=/etc/sysconfig/ipset
 if [ ! -f $IPSET_CONFIG ]; then
@@ -16,24 +19,59 @@ fi
 . /etc/rc.d/init.d/functions
 
 start() {
-	if [ -f $IPSET_CONFIG ]; then
-		show "Applying ipset rules"
-		/usr/sbin/ipset -X
-		/usr/sbin/ipset -R < $IPSET_CONFIG
-	   	RETVAL=$?
-		if [ $RETVAL = 0 ]; then
-			ok
-		else
-			fail
-		fi
-		touch /var/lock/subsys/ipset
+	if [ ! -f $IPSET_CONFIG ]; then
+		return
 	fi
+
+	show "Applying ipset rules"
+	/usr/sbin/ipset -X
+	/usr/sbin/ipset -R < $IPSET_CONFIG
+	RETVAL=$?
+	if [ $RETVAL = 0 ]; then
+		ok
+	else
+		fail
+	fi
+	touch /var/lock/subsys/ipset
 }
 
 stop() {
+	if [ ! -f /var/lock/subsys/ipset ]; then
+		return
+	fi
+
 	show "Resetting ipset rules"
 	/usr/sbin/ipset -X && ok || fail
 	rm -f /var/lock/subsys/ipset
+}
+
+condrestart() {
+	if [ ! -f /var/lock/subsys/ipset ]; then
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+save() {
+	show "Saving current rules to %s" $IPSET_CONFIG
+	/usr/sbin/ipset -S > $IPSET_CONFIG.tmp
+	RETVAL=$?
+	if [ $RETVAL = 0 ]; then
+		cat $IPSET_CONFIG.tmp > $IPSET_CONFIG
+		chmod 600 $IPSET_CONFIG
+		ok
+	else
+		fail
+	fi
+	rm -f $IPSET_CONFIG.tmp
+}
+
+status() {
+	/usr/sbin/ipset -L --sorted --numeric
+	RETVAL=$?
 }
 
 RETVAL=0
@@ -44,27 +82,20 @@ case "$1" in
   stop)
 	stop
 	;;
-  restart|force-reload)
+  restart|reload|force-reload)
 	start
 	;;
-  status)
-	/usr/sbin/ipset -L --sorted --numeric
-	exit $?
+  try-restart)
+	condrestart 0
 	;;
   save)
-	show "Saving current rules to %s" $IPSET_CONFIG
-	touch $IPSET_CONFIG
-	chmod 600 $IPSET_CONFIG
-	/usr/sbin/ipset -S > $IPSET_CONFIG
-   	RETVAL=$?
-	if [ $RETVAL = 0 ]; then
-		ok
-	else
-		fail
-	fi
+	save
+	;;
+  status)
+	status
 	;;
   *)
-	msg_usage "$0 {start|stop|restart|force-reload|status|save}"
+	msg_usage "$0 {start|stop|restart|try-restart|reload|force-reload|save|status}"
 	exit 3
 esac
 
