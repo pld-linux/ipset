@@ -1,0 +1,22 @@
+--- ipset-2.2.7/Makefile.orig	2005-11-24 10:18:16.000000000 +0100
++++ ipset-2.2.7/Makefile	2005-11-24 11:24:27.619369250 +0100
+@@ -4,10 +4,6 @@
+ # YOU SHOULD NOT NEED TO TOUCH ANYTHING BELOW THIS LINE
+ ######################################################################
+ 
+-ifndef KERNEL_DIR
+-KERNEL_DIR=/usr/src/linux
+-endif
+-
+ IPSET_VERSION:=2.2.8
+ 
+ PREFIX:=/usr/local
+@@ -21,7 +17,7 @@
+ RELEASE_DIR:=/tmp
+ 
+ COPT_FLAGS:=-O2
+-CFLAGS:=$(COPT_FLAGS) -Wall -Wunused -I$(KERNEL_DIR)/include -I. # -g -DIPSET_DEBUG #-pg # -DIPTC_DEBUG
++CFLAGS:=$(COPT_FLAGS) -Wall -Wunused -I. # -g -DIPSET_DEBUG #-pg # -DIPTC_DEBUG
+ SH_CFLAGS:=$(CFLAGS) -fPIC
+ SETTYPES:=ipmap portmap macipmap iphash nethash iptree ipporthash
+ 
