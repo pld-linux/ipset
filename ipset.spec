@@ -16,17 +16,17 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	17
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	4.2
+Version:	4.3
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	9060d549a18c1c0794fa47a71343d627
+# Source0-md5:	b0a6bf0d8954c5139b230786b75853c5
 Source1:	%{pname}.init
 Patch0:		shadow-args.patch
 URL:		http://ipset.netfilter.org/
