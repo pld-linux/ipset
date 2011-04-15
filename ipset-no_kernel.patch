@@ -1,0 +1,30 @@
+--- ipset-6.3/configure.ac.orig	2011-04-10 17:25:20.000000000 +0200
++++ ipset-6.3/configure.ac	2011-04-15 14:07:22.000000000 +0200
+@@ -39,27 +39,6 @@
+ else
+ 	ksourcedir="/lib/modules/$(uname -r)/source"
+ fi
+-if test ! -e "$ksourcedir/include/linux/netfilter/nfnetlink.h"
+-then
+-	AC_MSG_ERROR([Invalid kernel source directory $ksourcedir])
+-fi
+-
+-if test ! -e "$kbuilddir/.config"
+-then
+-	AC_MSG_ERROR([The kernel build directory $kbuilddir is not configured])
+-fi
+-
+-AC_PROG_GREP
+-
+-if test "X`$GREP '^CONFIG_IP6_NF_IPTABLES=' $kbuilddir/.config`" = "X"
+-then
+-	AC_MSG_ERROR([The kernel build directory $kbuilddir is not configured with IP6_NF_IPTABLES support (ip6tables)])
+-fi
+-
+-if test "X`$GREP 'NFNL_SUBSYS_IPSET' $ksourcedir/include/linux/netfilter/nfnetlink.h`" = "X"
+-then
+-	AC_MSG_ERROR([The kernel source directory $ksourcedir is not patched with netlink.patch to support ipset])
+-fi
+ 
+ dnl Maximal number of sets supported by the kernel, default 256
+ AC_ARG_WITH([maxsets],
