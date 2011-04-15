@@ -1,0 +1,19 @@
+--- ipset-6.3/configure.ac.orig	2011-04-10 17:25:20.000000000 +0200
++++ ipset-6.3/configure.ac	2011-04-15 12:14:24.000000000 +0200
+@@ -44,14 +44,14 @@
+ 	AC_MSG_ERROR([Invalid kernel source directory $ksourcedir])
+ fi
+ 
+-if test ! -e "$kbuilddir/.config"
++if test ! -e "$kbuilddir/config-dist"
+ then
+ 	AC_MSG_ERROR([The kernel build directory $kbuilddir is not configured])
+ fi
+ 
+ AC_PROG_GREP
+ 
+-if test "X`$GREP '^CONFIG_IP6_NF_IPTABLES=' $kbuilddir/.config`" = "X"
++if test "X`$GREP '^CONFIG_IP6_NF_IPTABLES=' $kbuilddir/config-dist`" = "X"
+ then
+ 	AC_MSG_ERROR([The kernel build directory $kbuilddir is not configured with IP6_NF_IPTABLES support (ip6tables)])
+ fi

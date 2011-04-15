@@ -16,22 +16,25 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	23
+%define		rel	0.1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	4.4
+Version:	6.3
 Release:	%{rel}
 License:	GPL
 Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	e21e9d9dfb8a01fc0122323ff1d6cbdb
+# Source0-md5:	8830f555133695d455a7aa5d7b5019ea
 Source1:	%{pname}.init
-Patch0:		shadow-args.patch
+Patch0:		%{name}-config_dist.patch
 URL:		http://ipset.netfilter.org/
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.20.2}
-%{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.22.1-2}
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool
+%{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.34}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.34}
 BuildRequires:	rpmbuild(macros) >= 1.379
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -104,22 +107,18 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %prep
 %setup -q -n %{pname}-%{version}
 %patch0 -p1
-mv kernel/{Kbuild,Makefile}
-
-# these options can be overriden by module parameters.
-# maximum number of ipsets.
-%{__sed} -i 's:$(IP_NF_SET_MAX):256:' kernel/Makefile
-# hash size for bindings of IP sets.
-%{__sed} -i 's:$(IP_NF_SET_HASHSIZE):1024:' kernel/Makefile
-
-%if "%{cc_version}" < "3.4"
-%{__sed} -i -e 's/-Wextra//' Makefile
-%{__sed} -i -e 's/-Winit-self//' Makefile
-%{__sed} -i -e 's/-Wold-style-definition//' Makefile
-%{__sed} -i -e 's/-Wno-missing-field-initializers//' Makefile
-%endif
 
 %build
+%{__libtoolize}
+%{__aclocal}
+%{__autoconf}
+%{__autoheader}
+%{__automake}
+%configure \
+	--with-kbuild=%{_kernelsrcdir}
+
+%{__make}
+
 %if %{with userspace}
 %{__make} binaries \
 	CC="%{__cc}" \
