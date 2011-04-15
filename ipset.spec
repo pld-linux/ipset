@@ -32,8 +32,8 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	8830f555133695d455a7aa5d7b5019ea
 Source1:	%{pname}.init
-Patch0:		%{name}-config_dist.patch
-Patch1:		%{name}-no_kernel.patch
+Patch0:		%{pname}-config_dist.patch
+Patch1:		%{pname}-no_kernel.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf
 BuildRequires:	automake
