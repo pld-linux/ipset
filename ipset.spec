@@ -202,7 +202,7 @@ fi
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/libipset/*.h
+%{_includedir}/libipset
 %{_libdir}/libipset.la
 %attr(755,root,root) %{_libdir}/libipset.so
 
