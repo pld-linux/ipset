@@ -20,7 +20,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	4
+%define		rel	5
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -219,6 +219,7 @@ fi
 %files -n kernel%{_alt_kernel}-net-ipset
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/xt_*.ko*
+%dir /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset
 /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set.ko*
 /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set_*.ko*
 %endif
