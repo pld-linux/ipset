@@ -20,27 +20,28 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	7
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.3
+Version:	6.5
 Release:	%{rel}
-License:	GPL
+License:	GPL v2
 Group:		Networking/Admin
+#Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	8830f555133695d455a7aa5d7b5019ea
+# Source0-md5:	9d334e3a6b696d461de6de27246fdec0
 Source1:	%{pname}.init
 Patch0:		%{pname}-config_dist.patch
 Patch1:		%{pname}-no_kernel.patch
 URL:		http://ipset.netfilter.org/
-BuildRequires:	autoconf
+BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
-%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.34}
+%{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.38.6}
 BuildRequires:	libmnl-devel
 BuildRequires:	libtool
-%{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.34}
+%{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	rpmbuild(macros) >= 1.583
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -67,6 +68,8 @@ zbioru.
 Summary:	Header files for ipset interface
 Summary(pl.UTF-8):	Pliki nagłówkowe do interfejsu ipset
 Group:		Development/Libraries
+Requires:	%{name} = %{version}-%{release}
+Requires:	libmnl-devel
 
 %description devel
 Header files for IPset interface.
@@ -196,15 +199,15 @@ fi
 %defattr(644,root,root,755)
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
-%attr(755,root,root) %{_libdir}/libipset.so.1.*
+%attr(755,root,root) %{_libdir}/libipset.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libipset.so.1
 %{_mandir}/man8/ipset.8*
 
 %files devel
 %defattr(644,root,root,755)
-%{_includedir}/libipset
-%{_libdir}/libipset.la
 %attr(755,root,root) %{_libdir}/libipset.so
+%{_libdir}/libipset.la
+%{_includedir}/libipset
 
 %files static
 %defattr(644,root,root,755)
