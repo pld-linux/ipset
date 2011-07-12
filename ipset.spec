@@ -20,18 +20,18 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.6
+Version:	6.8
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	14eafc915f559b900ed2256b761af9d4
+# Source0-md5:	575a365d430023a578350ca5de787b84
 Source1:	%{pname}.init
 Patch0:		%{pname}-config_dist.patch
 Patch1:		%{pname}-no_kernel.patch
