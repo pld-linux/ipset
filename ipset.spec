@@ -42,6 +42,7 @@ BuildRequires:	automake
 BuildRequires:	libmnl-devel
 BuildRequires:	libtool
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.583
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
