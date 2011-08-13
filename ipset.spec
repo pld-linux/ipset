@@ -35,6 +35,7 @@ Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 Source1:	%{pname}.init
 Patch0:		%{pname}-config_dist.patch
 Patch1:		%{pname}-no_kernel.patch
+Patch2:		%{pname}-hash-net-if-fix.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -138,6 +139,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %else
 %patch1 -p1
 %endif
+%patch2 -p1
 
 %build
 %{__libtoolize}

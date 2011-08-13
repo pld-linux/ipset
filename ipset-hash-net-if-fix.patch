@@ -1,0 +1,30 @@
+diff -urN ipset-6.8.orig/kernel/net/netfilter/ipset/ip_set_hash_netiface.c ipset-6.8/kernel/net/netfilter/ipset/ip_set_hash_netiface.c
+--- ipset-6.8.orig/kernel/net/netfilter/ipset/ip_set_hash_netiface.c	2011-07-08 10:13:53.000000000 +0200
++++ ipset-6.8/kernel/net/netfilter/ipset/ip_set_hash_netiface.c	2011-08-13 09:58:01.456999822 +0200
+@@ -41,25 +41,7 @@
+ static inline long
+ ifname_compare(const char *_a, const char *_b)
+ {
+-	const long *a = (const long *)_a;
+-	const long *b = (const long *)_b;
+-
+-	BUILD_BUG_ON(IFNAMSIZ > 4 * sizeof(unsigned long));
+-	if (a[0] != b[0])
+-		return a[0] - b[0];
+-	if (IFNAMSIZ > sizeof(long)) {
+-		if (a[1] != b[1])
+-			return a[1] - b[1];
+-	}
+-	if (IFNAMSIZ > 2 * sizeof(long)) {
+-		if (a[2] != b[2])
+-			return a[2] - b[2];
+-	}
+-	if (IFNAMSIZ > 3 * sizeof(long)) {
+-		if (a[3] != b[3])
+-			return a[3] - b[3];
+-	}
+-	return 0;
++	return strcmp(_a, _b);
+ }
+ 
+ static void
