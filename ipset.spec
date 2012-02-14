@@ -20,7 +20,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	16
+%define		rel	17
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -33,9 +33,8 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	71f4b826e025be5918a52e9843673167
 Source1:	%{pname}.init
-Patch0:		%{pname}-config_dist.patch
-Patch1:		%{pname}-no_kernel.patch
-Patch2:		%{pname}-hash-net-if-fix.patch
+Patch0:		%{pname}-no_kernel.patch
+Patch1:		%{pname}-hash-net-if-fix.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -134,12 +133,8 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 
 %prep
 %setup -q -n %{pname}-%{version}
-%if %{with kernel}
-%{?with_dist_kernel:%patch0 -p1}
-%else
+%{!?with_kernel:%patch0 -p1}
 %patch1 -p1
-%endif
-%patch2 -p1
 
 %build
 %{__libtoolize}
