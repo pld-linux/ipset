@@ -20,7 +20,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	23
+%define		rel	24
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
