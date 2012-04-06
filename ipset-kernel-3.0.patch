@@ -1,0 +1,20 @@
+--- ipset-6.11/kernel/net/netfilter/ipset/ip_set_getport.c~	2012-04-06 22:33:28.410967308 +0200
++++ ipset-6.11/kernel/net/netfilter/ipset/ip_set_getport.c	2012-04-06 22:48:32.250775653 +0200
+@@ -8,7 +8,7 @@
+ /* Get Layer-4 data from the packets */
+ 
+ #include <linux/version.h>
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0)
++#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+ #include <linux/export.h>
+ #endif
+ #include <linux/ip.h>
+--- ipset-6.11/kernel/net/netfilter/ipset/pfxlen.c~	2012-01-13 21:26:37.000000000 +0100
++++ ipset-6.11/kernel/net/netfilter/ipset/pfxlen.c	2012-04-06 22:48:59.190670586 +0200
+@@ -1,5 +1,5 @@
+ #include <linux/version.h>
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,0,0)
++#if LINUX_VERSION_CODE > KERNEL_VERSION(3,0,0)
+ #include <linux/export.h>
+ #endif
+ #include <linux/netfilter/ipset/pfxlen.h>
