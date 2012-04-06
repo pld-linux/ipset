@@ -1,0 +1,33 @@
+--- ipset-6.11/kernel/net/netfilter/ipset/ip_set_getport.c~	2012-01-13 21:26:27.000000000 +0100
++++ ipset-6.11/kernel/net/netfilter/ipset/ip_set_getport.c	2012-04-06 22:33:28.410967308 +0200
+@@ -119,9 +119,16 @@
+ {
+ 	int protoff;
+ 	u8 nexthdr;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0)
++	__be16 frag_off;
++#endif
+ 
+ 	nexthdr = ipv6_hdr(skb)->nexthdr;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0)
++	protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr, &frag_off);
++#else
+ 	protoff = ipv6_skip_exthdr(skb, sizeof(struct ipv6hdr), &nexthdr);
++#endif
+ 	if (protoff < 0)
+ 		return false;
+ 
+--- ipset-6.11/kernel/net/netfilter/ipset/ip_set_hash_ip.c~	2011-10-04 17:18:10.000000000 +0200
++++ ipset-6.11/kernel/net/netfilter/ipset/ip_set_hash_ip.c	2012-04-06 22:35:56.923721440 +0200
+@@ -241,7 +241,11 @@
+ static inline void
+ hash_ip6_data_copy(struct hash_ip6_elem *dst, const struct hash_ip6_elem *src)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0)
++	dst->ip.in6 = src->ip.in6;
++#else
+ 	ipv6_addr_copy(&dst->ip.in6, &src->ip.in6);
++#endif
+ }
+ 
+ static inline void

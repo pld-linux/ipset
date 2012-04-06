@@ -35,6 +35,7 @@ Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 Source1:	%{pname}.init
 Patch0:		%{pname}-no_kernel.patch
 Patch1:		%{pname}-hash-net-if-fix.patch
+Patch2:		%{pname}-kernel-3.3.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -135,6 +136,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %setup -q -n %{pname}-%{version}
 %{!?with_kernel:%patch0 -p1}
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__libtoolize}
@@ -198,7 +200,7 @@ fi
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.1
+%attr(755,root,root) %ghost %{_libdir}/libipset.so.2
 %{_mandir}/man8/ipset.8*
 
 %files devel
