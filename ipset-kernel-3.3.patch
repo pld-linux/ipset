@@ -39,3 +39,25 @@
  }
  
  static inline void
+--- ipset-6.11/kernel/net/netfilter/ipset/ip_set_hash_net.c.orig	2012-01-12 18:53:09.000000000 +0100
++++ ipset-6.11/kernel/net/netfilter/ipset/ip_set_hash_net.c	2012-04-06 22:42:23.225548191 +0200
+@@ -7,6 +7,7 @@
+ 
+ /* Kernel module implementing an IP set type: the hash:net type */
+ 
++#include <linux/version.h>
+ #include <linux/jhash.h>
+ #include <linux/module.h>
+ #include <linux/ip.h>
+@@ -295,7 +296,11 @@
+ hash_net6_data_copy(struct hash_net6_elem *dst,
+ 		    const struct hash_net6_elem *src)
+ {
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(3,3,0)
++	dst->ip.in6 = src->ip.in6;
++#else
+ 	ipv6_addr_copy(&dst->ip.in6, &src->ip.in6);
++#endif
+ 	dst->cidr = src->cidr;
+ 	dst->nomatch = src->nomatch;
+ }
