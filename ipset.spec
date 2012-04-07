@@ -41,7 +41,7 @@ URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.38.6}
-BuildRequires:	libmnl-devel
+BuildRequires:	libmnl-devel >= 1
 BuildRequires:	libtool
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
@@ -72,7 +72,7 @@ Summary:	Header files for ipset interface
 Summary(pl.UTF-8):	Pliki nagłówkowe do interfejsu ipset
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	libmnl-devel
+Requires:	libmnl-devel >= 1
 
 %description devel
 Header files for IPset interface.
