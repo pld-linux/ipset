@@ -25,24 +25,22 @@
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.11
+Version:	6.12.1
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	bfcc92e30a0fcf10ae6e7c4affa03c84
+# Source0-md5:	80df500a4d93cb14e1373ae290716cda
 Source1:	%{pname}.init
 Patch0:		%{pname}-no_kernel.patch
 Patch1:		%{pname}-hash-net-if-fix.patch
-Patch2:		%{pname}-kernel-3.3.patch
-Patch3:		%{pname}-kernel-3.0.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.38.6}
 BuildRequires:	libmnl-devel >= 1
-BuildRequires:	libtool
+BuildRequires:	libtool >= 2:2.0
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.583
@@ -137,8 +135,6 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %setup -q -n %{pname}-%{version}
 %{!?with_kernel:%patch0 -p1}
 %patch1 -p1
-%patch2 -p1
-%patch3 -p1
 
 %build
 %{__libtoolize}
@@ -147,6 +143,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %{__autoheader}
 %{__automake}
 %configure \
+	--disable-silent-rules \
 	--with-kbuild=%{_kernelsrcdir}
 
 %if %{with userspace}
