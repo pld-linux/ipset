@@ -20,18 +20,18 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	5
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.14
+Version:	6.16.1
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	70f2d4c054592236dcda285855a4ee58
+# Source0-md5:	9fd70c825f052db7dc9d5ba0562b7083
 Source1:	%{pname}.init
 Patch0:		%{pname}-no_kernel.patch
 URL:		http://ipset.netfilter.org/
@@ -143,6 +143,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %{__automake}
 %configure \
 	--disable-silent-rules \
+	-with-settype-modules-list=all \
 	--with-kbuild=%{_kernelsrcdir}
 
 %if %{with userspace}
