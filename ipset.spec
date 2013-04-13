@@ -20,7 +20,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	15
+%define		rel	16
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -169,11 +169,12 @@ install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
 
 %if %{with kernel}
-cd kernel/net/netfilter
-%install_kernel_modules -m ipset/ip_set -d kernel/net/ipv4/netfilter/ipset
-install -p ipset/ip_set_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset
-install -p xt_*.ko $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter
-cd -
+for drv in kernel/net/netfilter/ipset/ip_set*.ko ; do
+%install_kernel_modules -m ${drv%.ko} -d kernel/net/ipv4/netfilter/ipset
+done
+for drv in xt_*.ko ; do
+%install_kernel_modules -m ${drv%.ko} -d kernel/net/ipv4/netfilter
+done
 %endif
 
 %clean
