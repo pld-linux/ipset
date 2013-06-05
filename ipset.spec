@@ -39,7 +39,7 @@ BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
 %{?with_dist_kernel:BuildRequires:	kernel%{_alt_kernel}-module-build >= 3:2.6.38.6}
 BuildRequires:	libmnl-devel >= 1
-BuildRequires:	libltdl-devel
+BuildRequires:	libltdl-devel >= 2:2.0
 BuildRequires:	libtool >= 2:2.0
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
