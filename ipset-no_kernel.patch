@@ -1,26 +1,18 @@
---- ipset-6.6/configure.ac.orig	2011-05-24 10:28:55.000000000 +0200
-+++ ipset-6.6/configure.ac	2011-05-26 20:47:06.586245363 +0200
-@@ -39,23 +39,6 @@
- else
- 	ksourcedir="/lib/modules/$(uname -r)/source"
+--- ipset-6.20/configure.ac.orig	2013-10-02 22:53:23.000000000 +0200
++++ ipset-6.20/configure.ac	2013-10-24 17:52:20.931877137 +0200
+@@ -167,6 +167,7 @@
+ dnl Checks for functions
+ AC_CHECK_FUNCS(gethostbyname2)
+ 
++if test "$BUILDKMOD" == "yes"; then
+ dnl Check kernel incompatibilities... Ugly like hell
+ AC_MSG_CHECKING([kernel source for struct xt_action_param])
+ if test -f $ksourcedir/include/linux/netfilter/x_tables.h && \
+@@ -309,6 +310,7 @@
+ 	AC_MSG_RESULT(no)
+ 	AC_MSG_ERROR([Netns support is required in the Linux kernel tree])
  fi
--if test ! -e "$ksourcedir/include/linux/netfilter/nfnetlink.h"
--then
--	AC_MSG_ERROR([Invalid kernel source directory $ksourcedir])
--fi
--
--if test ! -e "$kbuilddir/.config"
--then
--	AC_MSG_ERROR([The kernel build directory $kbuilddir is not configured])
--fi
--
--AC_PROG_GREP
--
--if test "X`$GREP 'NFNL_SUBSYS_IPSET' $ksourcedir/include/linux/netfilter/nfnetlink.h`" = "X"
--then
--	AC_MSG_ERROR([The kernel source directory $ksourcedir is not patched with netlink.patch to support ipset])
--fi
--
- dnl Maximal number of sets supported by the kernel, default 256
- AC_ARG_WITH([maxsets],
- 	    AS_HELP_STRING([--with-maxsets=256],
++fi
+ 
+ dnl Checks for compiler characteristics.
+ dnl Check extra warning flags except

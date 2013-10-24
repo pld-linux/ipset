@@ -133,7 +133,7 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 
 %prep
 %setup -q -n %{pname}-%{version}
-%{!?with_kernel:%patch0 -p1}
+%patch0 -p1
 
 %build
 %{__libtoolize}
@@ -143,8 +143,9 @@ Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
 %{__automake}
 %configure \
 	--disable-silent-rules \
-	-with-settype-modules-list=all \
-	--with-kbuild=%{_kernelsrcdir}
+	--with-kbuild=%{_kernelsrcdir} \
+	%{!?with_kmod:--without-kmod} \
+	--with-settype-modules-list=all
 
 %if %{with userspace}
 %{__make}
@@ -208,6 +209,7 @@ fi
 %attr(755,root,root) %{_libdir}/libipset.so
 %{_libdir}/libipset.la
 %{_includedir}/libipset
+%{_pkgconfigdir}/libipset.pc
 
 %files static
 %defattr(644,root,root,755)
