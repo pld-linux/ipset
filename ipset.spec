@@ -20,18 +20,18 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	15
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.19
+Version:	6.20
 Release:	%{rel}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	cabba1bd63a93f6e1c3db3fb22412b64
+# Source0-md5:	af28b3af356fff3e4a8e321ff7145678
 Source1:	%{pname}.init
 Patch0:		%{pname}-no_kernel.patch
 URL:		http://ipset.netfilter.org/
@@ -200,7 +200,7 @@ fi
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.3
+%attr(755,root,root) %ghost %{_libdir}/libipset.so.2
 %{_mandir}/man8/ipset.8*
 
 %files devel
