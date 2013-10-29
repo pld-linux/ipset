@@ -12,28 +12,48 @@
 %if %{without kernel}
 %undefine	with_dist_kernel
 %endif
-%if "%{_alt_kernel}" != "%{nil}"
-%undefine	with_userspace
+
+# The goal here is to have main, userspace, package built once with
+# simple release number, and only rebuild kernel packages with kernel
+# version as part of release number, without the need to bump release
+# with every kernel change.
+%if 0%{?_pld_builder:1} && %{with kernel} && %{with userspace}
+%{error:kernel and userspace cannot be built at the same time on PLD builders}
+exit 1
 %endif
+
+%if "%{_alt_kernel}" != "%{nil}"
+%if 0%{?build_kernels:1}
+%{error:alt_kernel and build_kernels are mutually exclusive}
+exit 1
+%endif
+%undefine	with_userspace
+%global		_build_kernels		%{alt_kernel}
+%else
+%global		_build_kernels		%{?build_kernels:,%{?build_kernels}}
+%endif
+
 %if %{without userspace}
 # nothing to be placed to debuginfo package
 %define		_enable_debug_packages	0
 %endif
+
+%define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
+%define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
 %define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{_alt_kernel}
-Version:	6.20
-Release:	%{rel}
+Version:	6.20.1
+Release:	%{rel}%{?with_kernel:@%{_kernel_ver_str}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	af28b3af356fff3e4a8e321ff7145678
+# Source0-md5:	8af741492752fbf24d3a28a9d1473d40
 Source1:	%{pname}.init
-Patch0:		%{pname}-no_kernel.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -43,7 +63,7 @@ BuildRequires:	libltdl-devel >= 2:2.0
 BuildRequires:	libtool >= 2:2.0
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.583
+BuildRequires:	rpmbuild(macros) >= 1.678
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -104,57 +124,84 @@ IPset initialization script.
 %description init -l pl.UTF-8
 Skrypt startowy IPset.
 
-%package -n kernel%{_alt_kernel}-net-ipset
-Summary:	IPset kernel modules
-Summary(pl.UTF-8):	Moduły jądra oferujące wsparcie dla zbiorów IP
-Release:	%{rel}@%{_kernel_ver_str}
-Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
-Requires(post,postun):	/sbin/depmod
+%define	kernel_pkg()\
+%package -n kernel%{_alt_kernel}-net-ipset\
+Summary:	IPset kernel modules\
+Summary(pl.UTF-8):	Moduły jądra oferujące wsparcie dla zbiorów IP\
+Release:	%{rel}@%{_kernel_ver_str}\
+Group:		Base/Kernel\
+%{?with_dist_kernel:%requires_releq_kernel}\
+Requires(post,postun):	/sbin/depmod\
+\
+%description -n kernel%{_alt_kernel}-net-ipset\
+IP sets are a framework inside the Linux 2.4.x and 2.6.x kernel, which\
+can be administered by the ipset utility. Depending on the type,\
+currently an IP set may store IP addresses, (TCP/UDP) port numbers or\
+IP addresses with MAC addresses in a way, which ensures lightning\
+speed when matching an entry against a set.\
+\
+This package contains kernel modules.\
+\
+%description -n kernel%{_alt_kernel}-net-ipset -l pl.UTF-8\
+Zbiory IP to szkielet w jądrze Linuksa 2.4.x i 2.6.x, którym można\
+administrować przy użyciu narzędzia ipset. W zależności od\
+rodzaju aktualnie zbiór IP może przechowywać adresy IP, numery\
+portów (TCP/UDP) lub adresy IP z adresami MAC - w sposób\
+zapewniający maksymalną szybkość przy dopasowywaniu elementu do\
+zbioru.\
+\
+Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.\
+\
+%if %{with kernel}\
+%files -n kernel%{_alt_kernel}-net-ipset\
+%defattr(644,root,root,755)\
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/xt_*.ko*\
+%dir /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset\
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set.ko*\
+/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set_*.ko*\
+%endif\
+\
+%post	-n kernel%{_alt_kernel}-net-ipset\
+%depmod %{_kernel_ver}\
+\
+%postun	-n kernel%{_alt_kernel}-net-ipset\
+%depmod %{_kernel_ver}\
+%{nil}
 
-%description -n kernel%{_alt_kernel}-net-ipset
-IP sets are a framework inside the Linux 2.4.x and 2.6.x kernel, which
-can be administered by the ipset utility. Depending on the type,
-currently an IP set may store IP addresses, (TCP/UDP) port numbers or
-IP addresses with MAC addresses in a way, which ensures lightning
-speed when matching an entry against a set.
+%define build_kernel_pkg()\
+%configure \\\
+	--disable-silent-rules \\\
+	--with-kmod=yes \\\
+	--with-kbuild=%{_kernelsrcdir} \\\
+	--with-settype-modules-list=all\
+\
+# a hack not to list all modules: list only ip_set, all other are build anyway\
+%build_kernel_modules -C kernel/net/netfilter -m ipset/ip_set IP_SET_MAX=255 KDIR=$PWD/../..\
+\
+for drv in kernel/net/netfilter/ipset/ip_set*.ko ; do\
+%install_kernel_modules -D installed -m ${drv%.ko} -d kernel/net/ipv4/netfilter/ipset\
+done\
+for drv in kernel/net/netfilter/xt_*.ko ; do\
+%install_kernel_modules -D installed -m ${drv%.ko} -d kernel/net/ipv4/netfilter\
+done\
+%{nil}
 
-This package contains kernel modules.
-
-%description -n kernel%{_alt_kernel}-net-ipset -l pl.UTF-8
-Zbiory IP to szkielet w jądrze Linuksa 2.4.x i 2.6.x, którym można
-administrować przy użyciu narzędzia ipset. W zależności od
-rodzaju aktualnie zbiór IP może przechowywać adresy IP, numery
-portów (TCP/UDP) lub adresy IP z adresami MAC - w sposób
-zapewniający maksymalną szybkość przy dopasowywaniu elementu do
-zbioru.
-
-Ten pakiet zawiera moduły jądra oferujące wsparcie dla zbiorów IP.
+%{?with_kernel:%{expand:%kpkg}}
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
 
 %build
-%{__libtoolize}
-%{__aclocal} -I m4
-%{__autoconf}
-%{__autoheader}
-%{__automake}
+%if %{with userspace}
 %configure \
 	--disable-silent-rules \
-	--with-kbuild=%{_kernelsrcdir} \
-	%{!?with_kmod:--without-kmod} \
+	--with-kmod=no \
 	--with-settype-modules-list=all
 
-%if %{with userspace}
 %{__make}
 %endif
 
-%if %{with kernel}
-# a hack not to list all modules: list only ip_set, all other are build anyway
-%build_kernel_modules -C kernel/net/netfilter -m ipset/ip_set IP_SET_MAX=255 KDIR=$PWD/../..
-%endif
+%{?with_kernel:%{expand:%bkpkg}}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -170,12 +217,8 @@ install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
 
 %if %{with kernel}
-for drv in kernel/net/netfilter/ipset/ip_set*.ko ; do
-%install_kernel_modules -m ${drv%.ko} -d kernel/net/ipv4/netfilter/ipset
-done
-for drv in kernel/net/netfilter/xt_*.ko ; do
-%install_kernel_modules -m ${drv%.ko} -d kernel/net/ipv4/netfilter
-done
+install -d $RPM_BUILD_ROOT
+cp -a installed/* $RPM_BUILD_ROOT
 %endif
 
 %clean
@@ -189,19 +232,13 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del %{pname}
 fi
 
-%post	-n kernel%{_alt_kernel}-net-ipset
-%depmod %{_kernel_ver}
-
-%postun	-n kernel%{_alt_kernel}-net-ipset
-%depmod %{_kernel_ver}
-
 %if %{with userspace}
 %files
 %defattr(644,root,root,755)
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.2
+%attr(755,root,root) %ghost %{_libdir}/libipset.so.3
 %{_mandir}/man8/ipset.8*
 
 %files devel
@@ -218,13 +255,4 @@ fi
 %files init
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/ipset
-%endif
-
-%if %{with kernel}
-%files -n kernel%{_alt_kernel}-net-ipset
-%defattr(644,root,root,755)
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/xt_*.ko*
-%dir /lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set.ko*
-/lib/modules/%{_kernel_ver}/kernel/net/ipv4/netfilter/ipset/ip_set_*.ko*
 %endif
