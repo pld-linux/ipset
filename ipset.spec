@@ -42,18 +42,18 @@ exit 1
 %define		kpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%kernel_pkg ; done)
 %define		bkpkg	%(echo %{_build_kernels} | tr , '\\n' | while read n ; do echo %%undefine alt_kernel ; [ -z "$n" ] || echo %%define alt_kernel $n ; echo %%build_kernel_pkg ; done)
 
-%define		rel	3
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	6.20.1
+Version:	6.21.1
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	8af741492752fbf24d3a28a9d1473d40
+# Source0-md5:	9c136fd51694eb0ef259cda085145da0
 Source1:	%{pname}.init
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
