@@ -59,7 +59,7 @@ save() {
 }
 
 status() {
-	/usr/sbin/ipset -L --sorted --numeric
+	/usr/sbin/ipset list
 	RETVAL=$?
 }
 
