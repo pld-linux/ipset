@@ -5,7 +5,6 @@
 #
 # config: /etc/sysconfig/ipset
 #
-# $Id$
 
 IPSET_CONFIG=/etc/sysconfig/ipset
 if [ ! -f $IPSET_CONFIG ]; then
