@@ -7,7 +7,7 @@
 +#if LINUX_VERSION_CODE > KERNEL_VERSION(3,12,0)
  		    list_last_entry(&map->members, struct set_elem, list);
 +#else
-+		    list_entry((&map->members)->prev, struct set_elem, list)
++		    list_entry((&map->members)->prev, struct set_elem, list);
 +#endif
  	} else if (d->before > 0) {
  		/* Insert after next element */
