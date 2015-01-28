@@ -35,6 +35,7 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	8831b8f01458bf2abacc222884195a62
 Source1:	%{pname}.init
+Patch0:		list_last_entry.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -172,6 +173,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %if %{with userspace}
