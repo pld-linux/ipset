@@ -1,5 +1,5 @@
---- ipset/ipset-6.24/kernel/net/netfilter/ipset/ip_set_list_set.c~	2014-11-24 21:46:45.000000000 +0100
-+++ ipset/ipset-6.24/kernel/net/netfilter/ipset/ip_set_list_set.c	2015-01-28 19:09:21.324834608 +0100
+--- ipset-6.24/kernel/net/netfilter/ipset/ip_set_list_set.c~	2014-11-24 21:46:45.000000000 +0100
++++ ipset-6.24/kernel/net/netfilter/ipset/ip_set_list_set.c	2015-01-28 19:09:21.324834608 +0100
 @@ -280,7 +280,11 @@
  	if (d->before == 0) {
  		/* Append  */
