@@ -22,20 +22,19 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	2
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	6.29
+Version:	6.30
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	fd8ea35997115c5c630eee22f0beecec
+# Source0-md5:	41c32e3b884ec714f0aac95e7675f9d1
 Source1:	%{pname}.init
-Patch0:		%{pname}-Backports-for-the-nla_put_net64-API-changes.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -106,6 +105,19 @@ IPset initialization script.
 %description init -l pl.UTF-8
 Skrypt startowy IPset.
 
+%package -n bash-completion-ipset
+Summary:	Bash completion for ipset command
+Summary(pl.UTF-8):	Bashowe dopełnianie parametrów polecenia ipset
+Group:		Applications/Shells
+Requires:	%{pname} = %{version}-%{release}
+Requires:	bash-completion >= 2.0
+
+%description -n bash-completion-ipset
+Bash completion for ipset command.
+
+%description -n bash-completion-ipset -l pl.UTF-8
+Bashowe dopełnianie parametrów polecenia ipset.
+
 %define	kernel_pkg()\
 %package -n kernel%{_alt_kernel}-net-ipset\
 Summary:	IPset kernel modules\
@@ -173,7 +185,6 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
 
 %build
 %{__aclocal}
@@ -181,12 +192,17 @@ done\
 %{__autoheader}
 %{__automake}
 %if %{with userspace}
-%configure \
+install -d build-usr
+cd build-usr
+../%configure \
+	bashcompdir=%{bash_compdir} \
+	--enable-bashcompl \
 	--disable-silent-rules \
 	--with-kmod=no \
 	--with-settype-modules-list=all
 
 %{__make}
+cd ..
 %endif
 
 %{?with_kernel:%{expand:%build_kernel_packages}}
@@ -197,9 +213,8 @@ rm -rf $RPM_BUILD_ROOT
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}/libipset}
 
-%{__make} install \
+%{__make} -C build-usr install \
 	DESTDIR=$RPM_BUILD_ROOT
-cp include/libipset/*.h $RPM_BUILD_ROOT%{_includedir}/libipset
 
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
@@ -243,4 +258,8 @@ fi
 %files init
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/ipset
+
+%files -n bash-completion-ipset
+%defattr(644,root,root,755)
+%{bash_compdir}/ipset
 %endif
