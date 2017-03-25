@@ -27,14 +27,15 @@ exit 1
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	6.30
+Version:	6.32
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	41c32e3b884ec714f0aac95e7675f9d1
+# Source0-md5:	857a5c6a6d645196865a82bf6fd7f567
 Source1:	%{pname}.init
+Patch0:		linux-4.10.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -185,6 +186,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %{__aclocal}
