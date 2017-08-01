@@ -1,0 +1,134 @@
+--- ipset-6.32/kernel/net/netfilter/ipset/ip_set_core.c.orig	2017-08-01 15:16:35.420874095 +0200
++++ ipset-6.32/kernel/net/netfilter/ipset/ip_set_core.c	2017-08-01 15:20:22.597111757 +0200
+@@ -300,7 +300,11 @@
+ 
+ 	if (unlikely(!flag_nested(nla)))
+ 		return -IPSET_ERR_PROTOCOL;
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++	if (nla_parse_nested(tb, IPSET_ATTR_IPADDR_MAX, nla, ipaddr_policy, NULL))
++#else
+ 	if (nla_parse_nested(tb, IPSET_ATTR_IPADDR_MAX, nla, ipaddr_policy))
++#endif
+ 		return -IPSET_ERR_PROTOCOL;
+ 	if (unlikely(!ip_set_attr_netorder(tb, IPSET_ATTR_IPADDR_IPV4)))
+ 		return -IPSET_ERR_PROTOCOL;
+@@ -318,7 +322,11 @@
+ 	if (unlikely(!flag_nested(nla)))
+ 		return -IPSET_ERR_PROTOCOL;
+ 
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++	if (nla_parse_nested(tb, IPSET_ATTR_IPADDR_MAX, nla, ipaddr_policy, NULL))
++#else
+ 	if (nla_parse_nested(tb, IPSET_ATTR_IPADDR_MAX, nla, ipaddr_policy))
++#endif
+ 		return -IPSET_ERR_PROTOCOL;
+ 	if (unlikely(!ip_set_attr_netorder(tb, IPSET_ATTR_IPADDR_IPV6)))
+ 		return -IPSET_ERR_PROTOCOL;
+@@ -914,7 +922,11 @@
+ 	/* Without holding any locks, create private part. */
+ 	if (attr[IPSET_ATTR_DATA] &&
+ 	    nla_parse_nested(tb, IPSET_ATTR_CREATE_MAX, attr[IPSET_ATTR_DATA],
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++			     set->type->create_policy, NULL)) {
++#else
+ 			     set->type->create_policy)) {
++#endif
+ 		ret = -IPSET_ERR_PROTOCOL;
+ 		goto put_out;
+ 	}
+@@ -1270,7 +1282,11 @@
+ 
+ 	/* Second pass, so parser can't fail */
+ 	nla_parse(cda, IPSET_ATTR_CMD_MAX,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++		  attr, nlh->nlmsg_len - min_len, ip_set_setname_policy, NULL);
++#else
+ 		  attr, nlh->nlmsg_len - min_len, ip_set_setname_policy);
++#endif
+ 
+ 	if (cda[IPSET_ATTR_SETNAME]) {
+ 		struct ip_set *set;
+@@ -1333,7 +1333,11 @@
+ 			 * manually :-(
+ 			 */
+ 			if (nlh->nlmsg_flags & NLM_F_ACK)
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++				netlink_ack(cb->skb, nlh, ret, NULL);
++#else
+ 				netlink_ack(cb->skb, nlh, ret);
++#endif
+ 			return ret;
+ 		}
+ 	}
+@@ -1526,7 +1542,11 @@
+ 
+ 		nla_parse(cda, IPSET_ATTR_CMD_MAX,
+ 			  cmdattr, nlh->nlmsg_len - min_len,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++			  ip_set_adt_policy, NULL);
++#else
+ 			  ip_set_adt_policy);
++#endif
+ 
+ 		errline = nla_data(cda[IPSET_ATTR_LINENO]);
+ 
+@@ -1573,7 +1593,11 @@
+ 	if (attr[IPSET_ATTR_DATA]) {
+ 		if (nla_parse_nested(tb, IPSET_ATTR_ADT_MAX,
+ 				     attr[IPSET_ATTR_DATA],
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++				     set->type->adt_policy, NULL))
++#else
+ 				     set->type->adt_policy))
++#endif
+ 			return -IPSET_ERR_PROTOCOL;
+ 		ret = call_ad(ctnl, skb, set, tb, IPSET_ADD, flags,
+ 			      use_lineno);
+@@ -1585,7 +1609,11 @@
+ 			if (nla_type(nla) != IPSET_ATTR_DATA ||
+ 			    !flag_nested(nla) ||
+ 			    nla_parse_nested(tb, IPSET_ATTR_ADT_MAX, nla,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++					     set->type->adt_policy, NULL))
++#else
+ 					     set->type->adt_policy))
++#endif
+ 				return -IPSET_ERR_PROTOCOL;
+ 			ret = call_ad(ctnl, skb, set, tb, IPSET_ADD,
+ 				      flags, use_lineno);
+@@ -1628,7 +1656,11 @@
+ 	if (attr[IPSET_ATTR_DATA]) {
+ 		if (nla_parse_nested(tb, IPSET_ATTR_ADT_MAX,
+ 				     attr[IPSET_ATTR_DATA],
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++				     set->type->adt_policy, NULL))
++#else
+ 				     set->type->adt_policy))
++#endif
+ 			return -IPSET_ERR_PROTOCOL;
+ 		ret = call_ad(ctnl, skb, set, tb, IPSET_DEL, flags,
+ 			      use_lineno);
+@@ -1640,7 +1672,11 @@
+ 			if (nla_type(nla) != IPSET_ATTR_DATA ||
+ 			    !flag_nested(nla) ||
+ 			    nla_parse_nested(tb, IPSET_ATTR_ADT_MAX, nla,
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++					     set->type->adt_policy, NULL))
++#else
+ 					     set->type->adt_policy))
++#endif
+ 				return -IPSET_ERR_PROTOCOL;
+ 			ret = call_ad(ctnl, skb, set, tb, IPSET_DEL,
+ 				      flags, use_lineno);
+@@ -1673,7 +1709,11 @@
+ 		return -ENOENT;
+ 
+ 	if (nla_parse_nested(tb, IPSET_ATTR_ADT_MAX, attr[IPSET_ATTR_DATA],
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(4,12,0)
++			     set->type->adt_policy, NULL))
++#else
+ 			     set->type->adt_policy))
++#endif
+ 		return -IPSET_ERR_PROTOCOL;
+ 
+ 	rcu_read_lock_bh();
