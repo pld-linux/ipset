@@ -27,15 +27,14 @@ exit 1
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	6.38
+Version:	7.0
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: http://ipset.netfilter.org/install.html
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	0e5d9c85f6b78e7dff0c996e2900574b
+# Source0-md5:	64c4e2e7123481c9db7ee1df127d9531
 Source1:	%{pname}.init
-Patch0:		kernel-4.17.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -186,7 +185,6 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
-%patch0 -p1
 
 %build
 %{__aclocal}
@@ -243,7 +241,8 @@ fi
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.11
+%attr(755,root,root) %ghost %{_libdir}/libipset.so.13
+%{_mandir}/man3/libipset.3*
 %{_mandir}/man8/ipset.8*
 
 %files devel
