@@ -1,0 +1,37 @@
+commit 21c9f79121abb70324efe9fc19ef0fb3685afb1a
+Author: Florent Fourcot <florent.fourcot@wifirst.fr>
+Date:   Tue Nov 27 17:15:56 2018 +0100
+
+    netfilter: ipset: fix ip_set_byindex function
+    
+    New function added by "Introduction of new commands and protocol
+    version 7" is not working, since we return skb2 to user
+    
+    Signed-off-by: Victorien Molle <victorien.molle@wifirst.fr>
+    Signed-off-by: Florent Fourcot <florent.fourcot@wifirst.fr>
+    Signed-off-by: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+
+diff --git a/kernel/net/netfilter/ipset/ip_set_core.c b/kernel/net/netfilter/ipset/ip_set_core.c
+index c2e32ee..b93805c 100644
+--- a/kernel/net/netfilter/ipset/ip_set_core.c
++++ b/kernel/net/netfilter/ipset/ip_set_core.c
+@@ -1976,7 +1976,7 @@ IPSET_CBFN(ip_set_byindex, struct net *net, struct sock *ctnl,
+ 	if (!nlh2)
+ 		goto nlmsg_failure;
+ 	if (nla_put_u8(skb2, IPSET_ATTR_PROTOCOL, protocol(attr)) ||
+-	    nla_put_string(skb, IPSET_ATTR_SETNAME, set->name))
++	    nla_put_string(skb2, IPSET_ATTR_SETNAME, set->name))
+ 		goto nla_put_failure;
+ 	nlmsg_end(skb2, nlh2);
+ 
+--- ipset-7.0/configure.ac~	2018-10-27 18:09:10.000000000 +0200
++++ ipset-7.0/configure.ac	2018-12-03 19:36:17.306201572 +0100
+@@ -499,7 +499,7 @@ fi
+ AC_MSG_CHECKING([kernel source for struct net in struct nfnl_callback])
+ if test -f $ksourcedir/include/linux/netfilter/nfnetlink.h && \
+    $AWK '/^struct nfnl_callback /,/^}/' $ksourcedir/include/linux/netfilter/nfnetlink.h | \
+-   $GREP -q 'struct net'; then
++   $GREP 'call)' | $GREP -q 'struct net'; then
+ 	AC_MSG_RESULT(yes)
+ 	AC_SUBST(HAVE_NET_IN_NFNL_CALLBACK_FN, define)
+ else

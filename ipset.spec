@@ -22,7 +22,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -35,6 +35,7 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	64c4e2e7123481c9db7ee1df127d9531
 Source1:	%{pname}.init
+Patch0:		build.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.50
 BuildRequires:	automake
@@ -185,6 +186,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %{__aclocal}
