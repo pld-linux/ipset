@@ -1,0 +1,15 @@
+--- ipset-7.1/kernel/net/netfilter/ipset/ip_set_hash_gen.h~	2018-12-10 18:35:31.000000000 +0100
++++ ipset-7.1/kernel/net/netfilter/ipset/ip_set_hash_gen.h	2019-05-07 18:42:08.063827159 +0200
+@@ -666,8 +666,11 @@
+ 	spin_unlock_bh(&set->lock);
+ 
+ 	/* Give time to other readers of the set */
++#if LINUX_VERSION_CODE >= KERNEL_VERSION(5, 1, 0)
++	synchronize_rcu();
++#else
+ 	synchronize_rcu_bh();
+-
++#endif
+ 	pr_debug("set %s resized from %u (%p) to %u (%p)\n", set->name,
+ 		 orig->htable_bits, orig, t->htable_bits, t);
+ 	/* If there's nobody else dumping the table, destroy it */
