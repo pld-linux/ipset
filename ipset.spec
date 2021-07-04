@@ -22,7 +22,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -35,11 +35,12 @@ Group:		Networking/Admin
 Source0:	http://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	7c17aca72bcf852f5bc95582aaa60408
 Source1:	%{pname}.init
+Patch0:		git.patch
 URL:		http://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake
-BuildRequires:	libmnl-devel >= 1
 BuildRequires:	libltdl-devel >= 2:2.0
+BuildRequires:	libmnl-devel >= 1
 BuildRequires:	libtool >= 2:2.0
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
@@ -60,11 +61,10 @@ speed when matching an entry against a set.
 
 %description -l pl.UTF-8
 Zbiory IP to szkielet w jądrze Linuksa 2.4.x i 2.6.x, którym można
-administrować przy użyciu narzędzia ipset. W zależności od
-rodzaju aktualnie zbiór IP może przechowywać adresy IP, numery
-portów (TCP/UDP) lub adresy IP z adresami MAC - w sposób
-zapewniający maksymalną szybkość przy dopasowywaniu elementu do
-zbioru.
+administrować przy użyciu narzędzia ipset. W zależności od rodzaju
+aktualnie zbiór IP może przechowywać adresy IP, numery portów
+(TCP/UDP) lub adresy IP z adresami MAC - w sposób zapewniający
+maksymalną szybkość przy dopasowywaniu elementu do zbioru.
 
 %package devel
 Summary:	Header files for ipset interface
@@ -185,6 +185,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %{__aclocal}
@@ -240,10 +241,12 @@ fi
 %defattr(644,root,root,755)
 %doc ChangeLog ChangeLog.ippool README UPGRADE
 %attr(755,root,root) %{_sbindir}/ipset
+%attr(755,root,root) %{_sbindir}/ipset-translate
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libipset.so.13
-%{_mandir}/man3/libipset.3*
 %{_mandir}/man8/ipset.8*
+%{_mandir}/man8/ipset-translate.8*
+
 
 %files devel
 %defattr(644,root,root,755)
@@ -251,6 +254,7 @@ fi
 %{_libdir}/libipset.la
 %{_includedir}/libipset
 %{_pkgconfigdir}/libipset.pc
+%{_mandir}/man3/libipset.3*
 
 %files static
 %defattr(644,root,root,755)
