@@ -22,7 +22,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	2
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
@@ -35,6 +35,7 @@ Group:		Networking/Admin
 Source0:	https://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
 # Source0-md5:	b681a86dbdb2d9726245af739bca01ac
 Source1:	%{pname}.init
+Patch0:		kernel-5.16.patch
 URL:		https://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.63
 BuildRequires:	automake
@@ -184,6 +185,7 @@ done\
 
 %prep
 %setup -q -n %{pname}-%{version}
+%patch0 -p1
 
 %build
 %{__aclocal}
