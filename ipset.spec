@@ -22,18 +22,18 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	0.1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	7.19
+Version:	7.21
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: https://ipset.netfilter.org/install.html
 Source0:	https://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	34b92f93292e6114aede1a0f18a75251
+# Source0-md5:	c1116de7c5dd01a0a83413b308ca1917
 Source1:	%{pname}.init
 URL:		https://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.63
