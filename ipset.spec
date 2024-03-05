@@ -4,7 +4,7 @@
 #	  the dependencies here
 #
 # Conditional build:
-%bcond_without	kernel		# don't build kernel modules
+%bcond_with	kernel		# build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
@@ -22,7 +22,7 @@ exit 1
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	0.1
+%define		rel	1
 %define		pname	ipset
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
