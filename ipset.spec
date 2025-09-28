@@ -4,8 +4,8 @@
 #	  the dependencies here
 #
 # Conditional build:
-%bcond_with	kernel		# build kernel modules
-%bcond_without	userspace	# don't build userspace tools
+%bcond_with	kernel		# kernel modules
+%bcond_without	userspace	# userspace tools
 %bcond_with	verbose		# verbose build (V=1)
 
 # The goal here is to have main, userspace, package built once with
@@ -27,13 +27,13 @@ exit 1
 Summary:	IP sets utility
 Summary(pl.UTF-8):	Narzędzie do zarządzania zbiorami IP
 Name:		%{pname}%{?_pld_builder:%{?with_kernel:-kernel}}%{_alt_kernel}
-Version:	7.22
+Version:	7.24
 Release:	%{rel}%{?_pld_builder:%{?with_kernel:@%{_kernel_ver_str}}}
 License:	GPL v2
 Group:		Networking/Admin
 #Source0Download: https://ipset.netfilter.org/install.html
 Source0:	https://ipset.netfilter.org/%{pname}-%{version}.tar.bz2
-# Source0-md5:	cfc4714a4198235ba741b1c5bb3b3941
+# Source0-md5:	953459132cf739e977b3dbb3674ad09e
 Source1:	%{pname}.init
 URL:		https://ipset.netfilter.org/
 BuildRequires:	autoconf >= 2.63
@@ -43,7 +43,7 @@ BuildRequires:	libmnl-devel >= 1
 BuildRequires:	libtool >= 2:2.0
 %{?with_userspace:BuildRequires:	linux-libc-headers >= 7:2.6.38.6}
 BuildRequires:	pkgconfig
-BuildRequires:	rpmbuild(macros) >= 1.701
+BuildRequires:	rpmbuild(macros) >= 2.043
 %{?with_kernel:%{expand:%buildrequires_kernel kernel%%{_alt_kernel}-module-build >= 3:2.6.24}}
 Suggests:	kernel-net-ipset
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -193,7 +193,8 @@ done\
 %if %{with userspace}
 install -d build-usr
 cd build-usr
-../%configure \
+%define	configuredir ..
+%configure \
 	bashcompdir=%{bash_compdir} \
 	--enable-bashcompl \
 	--disable-silent-rules \
@@ -214,6 +215,9 @@ install -d $RPM_BUILD_ROOT{/etc/rc.d/init.d,%{_includedir}/libipset}
 
 %{__make} -C build-usr install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+# obsoleted by pkg-config
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/libipset.la
 
 install -p %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/%{pname}
 %endif
@@ -241,15 +245,14 @@ fi
 %attr(755,root,root) %{_sbindir}/ipset
 %attr(755,root,root) %{_sbindir}/ipset-translate
 %attr(755,root,root) %{_libdir}/libipset.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libipset.so.13
+%ghost %{_libdir}/libipset.so.13
 %{_mandir}/man8/ipset.8*
 %{_mandir}/man8/ipset-translate.8*
 
 
 %files devel
 %defattr(644,root,root,755)
-%attr(755,root,root) %{_libdir}/libipset.so
-%{_libdir}/libipset.la
+%{_libdir}/libipset.so
 %{_includedir}/libipset
 %{_pkgconfigdir}/libipset.pc
 %{_mandir}/man3/libipset.3*
